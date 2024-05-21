@@ -1133,30 +1133,13 @@ const verifyQueue = async (
     const textMessage = {
       text: formatBody(`\u200e${greetingMessage}\n\n${options}`, contact),
     };
-    let lastMsg = map_msg.get(contact.number)
-    let invalidOption = "Opção inválida, por favor, escolha uma opção válida."
 
-    // console.log('getBodyMessage(msg)', getBodyMessage(msg))
-    console.log('textMessage2', textMessage)
-    // map_msg.set(contact.number, lastMsg);
-    if (!lastMsg?.msg || getBodyMessage(msg).includes('#') || lastMsg.msg !== textMessage.text && !lastMsg.invalid_option) {
-      const sendMsg = await wbot.sendMessage(
-        `${contact.number}@${ticket.isGroup ? "g.us" : "s.whatsapp.net"}`,
-        textMessage
-      );
-      map_msg.set(contact.number, { msg: textMessage.text, invalid_option: false });
-      await verifyMessage(sendMsg, ticket, ticket.contact);
+    const sendMsg = await wbot.sendMessage(
+      `${contact.number}@${ticket.isGroup ? "g.us" : "s.whatsapp.net"}`,
+      textMessage
+    );
 
-    } else if (lastMsg.msg !== invalidOption && !lastMsg.invalid_option) {
-      textMessage.text = invalidOption
-      const sendMsg = await wbot.sendMessage(
-        `${contact.number}@${ticket.isGroup ? "g.us" : "s.whatsapp.net"}`,
-        textMessage
-      );
-      map_msg.set(contact.number, { msg: textMessage.text, invalid_option: true });
-      await verifyMessage(sendMsg, ticket, ticket.contact);
-    }
-
+    await verifyMessage(sendMsg, ticket, ticket.contact);
   };
 
   if (choosenQueue) {
